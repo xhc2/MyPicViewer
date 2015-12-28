@@ -5,20 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.example.tongmin.mypicviewer.TestView
-        android:id="@+id/testview"
+    <com.example.tongmin.mypicviewer.MyFlowLayout
+        android:background="#A5B8AF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingTop="5dp"
 
-        android:background="#C5C2CF"
-        android:text="helloworld" />
-
+        >
     <TextView
-        android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/testview"
-        android:text="sadf" />
+        android:layout_marginBottom="4dp"
+        android:text="test"
+        />
+
+    </com.example.tongmin.mypicviewer.MyFlowLayout>
 
 </RelativeLayout>
