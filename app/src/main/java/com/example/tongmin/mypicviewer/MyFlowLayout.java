@@ -64,7 +64,7 @@ public class MyFlowLayout extends ViewGroup {
                 //在这一行是可以放的下的
                 currentRowWidth += viewWidth;
 
-            } else { 
+            } else {
                 //在这里就是换行了
                 if ((measureHeight + maxRowHeight) <= heightSize) {
                     //高度没有超过最高的高度
@@ -81,7 +81,21 @@ public class MyFlowLayout extends ViewGroup {
             //如果两个都是0那么就是只有一行
             measureHeight += maxRowHeight;
             measureWidth = currentRowWidth;
+
         }
+        if((measureHeight + getPaddingLeft()) < heightSize){
+            measureHeight +=  getPaddingLeft();
+        }
+        if((measureHeight+getPaddingRight()) < heightSize){
+            measureHeight +=  getPaddingRight();
+        }
+        if((measureWidth + getPaddingTop()) < widthSize){
+            measureWidth += getPaddingTop();
+        }
+        if((measureWidth+getPaddingBottom()) < widthSize){
+            measureWidth += getPaddingBottom();
+        }
+
         if (widthMode == MeasureSpec.EXACTLY) {
             measureWidth = widthSize;
         }
@@ -96,8 +110,8 @@ public class MyFlowLayout extends ViewGroup {
 
         int childCount = getChildCount();
         for(int i = 0 ;i < childCount ; ++ i){
-            View view = getChildAt(i);
-
+            View child = getChildAt(i);
+            MarginLayoutParams marginLayoutParams = (MarginLayoutParams) child.getLayoutParams();
         }
 
     }
