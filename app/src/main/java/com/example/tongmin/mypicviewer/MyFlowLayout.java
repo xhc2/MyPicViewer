@@ -30,70 +30,67 @@ public class MyFlowLayout extends ViewGroup {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        Log.e("xhc","parent size width "+widthSize+" height "+heightSize);
         if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
             setMeasuredDimension(widthSize, heightSize);
             return;
         }
 
+        //最后管padding
         int childCount = getChildCount();
-        //最终的高度和宽度
-        int measureHeight = 0, measureWidth = 0;
-        //一行中最高的一个控件的高度
-        int maxRowHeight = 0;
-        //当前行的宽度
-        int currentRowWidth = 0;
-
+        int measureWidth = 0, measureHeight = 0;
+        //一行中最高的一个控件
+        int heightMax = 0, widthMax = 0;
 
         for (int i = 0; i < childCount; ++i) {
+            View view = getChildAt(i);
 
-            View child = getChildAt(i);
-            measureChild(child,widthMeasureSpec,heightMeasureSpec);
-            MarginLayoutParams marginLayoutParams = (MarginLayoutParams) child.getLayoutParams();
-            int viewHeight = child.getMeasuredHeight();
-            viewHeight += marginLayoutParams.topMargin;
-            viewHeight += marginLayoutParams.bottomMargin;
-            if (viewHeight > maxRowHeight) {
-                //设置一行中最高的一个
-                maxRowHeight = viewHeight;
-            }
-
-            int viewWidth = child.getMeasuredWidth();
-            viewWidth += marginLayoutParams.leftMargin;
-            viewWidth += marginLayoutParams.rightMargin;
-            if (widthSize >= (viewWidth + currentRowWidth)) {
-                //在这一行是可以放的下的
-                currentRowWidth += viewWidth;
-
+            MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
+//            int widthMeasure = getChildMeasureSpec(widthMeasureSpec,0,params.width);
+//            int heightMeasure = getChildMeasureSpec(heightMeasureSpec,0, params.height);
+            measureChild(view, widthMeasureSpec, heightMeasureSpec);
+            if ((measureWidth + params.rightMargin + params.leftMargin + view.getMeasuredWidth()) <= widthSize) {
+                //这一行可以放下这个控件
+                measureWidth += (params.rightMargin + params.leftMargin + view.getMeasuredWidth());
+                if (measureHeight < (view.getMeasuredHeight() + params.topMargin + params.bottomMargin)) {
+                    Log.e("xhc", "getMeasuredHeight " + view.getMeasuredHeight() + " params.topMargin " + params.topMargin + " bottomMargin " + params.bottomMargin);
+                    heightMax = (view.getMeasuredHeight() + params.topMargin + params.bottomMargin);
+                }
             } else {
-                //在这里就是换行了
-                if ((measureHeight + maxRowHeight) <= heightSize) {
-                    //高度没有超过最高的高度
-                    measureHeight += maxRowHeight;
-                    maxRowHeight = 0;
+                //换行
+                if ((measureHeight + heightMax) < heightSize) {
+                    //换行了 高度增加
+                    measureHeight += heightMax;
+                    Log.e("xhc", " 高度增加了几次 " + measureHeight);
                 }
-                if (currentRowWidth > measureWidth) {
-                    //设置宽度为最宽的一行的宽度
-                    measureWidth = currentRowWidth;
+                if (widthMax < measureWidth) {
+                    //换成最宽的宽度;
+                    widthMax = measureWidth;
                 }
             }
         }
-        if (measureHeight == 0 && measureWidth == 0) {
-            //如果两个都是0那么就是只有一行
-            measureHeight += maxRowHeight;
-            measureWidth = currentRowWidth;
 
+//        Log.e("xhc"," width "+measureWidth);
+
+        if(widthMax != 0){
+            measureWidth = widthMax;
         }
-        if((measureHeight + getPaddingLeft()) < heightSize){
-            measureHeight +=  getPaddingLeft();
+
+
+        if (measureHeight == 0) {
+            measureHeight = heightMax;
         }
-        if((measureHeight+getPaddingRight()) < heightSize){
-            measureHeight +=  getPaddingRight();
+        if ((measureWidth + getPaddingLeft()) < widthSize) {
+            measureWidth += getPaddingLeft();
         }
-        if((measureWidth + getPaddingTop()) < widthSize){
-            measureWidth += getPaddingTop();
+        if ((measureWidth + getPaddingRight()) < widthSize) {
+            measureWidth += getPaddingRight();
         }
-        if((measureWidth+getPaddingBottom()) < widthSize){
-            measureWidth += getPaddingBottom();
+        if ((measureHeight + getPaddingTop()) < heightSize) {
+            measureHeight += getPaddingTop();
+        }
+        if ((measureHeight + getPaddingBottom()) < heightSize) {
+            measureHeight += getPaddingBottom();
         }
 
         if (widthMode == MeasureSpec.EXACTLY) {
@@ -102,17 +99,13 @@ public class MyFlowLayout extends ViewGroup {
         if (heightMode == MeasureSpec.EXACTLY) {
             measureHeight = heightSize;
         }
+        Log.e("xhc", "width " + measureWidth + " height " + measureHeight);
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
 
-        int childCount = getChildCount();
-        for(int i = 0 ;i < childCount ; ++ i){
-            View child = getChildAt(i);
-            MarginLayoutParams marginLayoutParams = (MarginLayoutParams) child.getLayoutParams();
-        }
 
     }
 
