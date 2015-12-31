@@ -30,7 +30,6 @@ public class MyFlowLayout extends ViewGroup {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        Log.e("xhc","parent size width "+widthSize+" height "+heightSize);
         if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
             setMeasuredDimension(widthSize, heightSize);
             return;
@@ -46,22 +45,21 @@ public class MyFlowLayout extends ViewGroup {
             View view = getChildAt(i);
 
             MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
-//            int widthMeasure = getChildMeasureSpec(widthMeasureSpec,0,params.width);
-//            int heightMeasure = getChildMeasureSpec(heightMeasureSpec,0, params.height);
             measureChild(view, widthMeasureSpec, heightMeasureSpec);
-            if ((measureWidth + params.rightMargin + params.leftMargin + view.getMeasuredWidth()) <= widthSize) {
+//            Log.e("xhc"," height "+ view.getMeasuredHeight());
+            if ((measureWidth + params.rightMargin + params.leftMargin + view.getMeasuredWidth() + getPaddingRight()) <= widthSize) {
                 //这一行可以放下这个控件
                 measureWidth += (params.rightMargin + params.leftMargin + view.getMeasuredWidth());
-                if (measureHeight < (view.getMeasuredHeight() + params.topMargin + params.bottomMargin)) {
-                    Log.e("xhc", "getMeasuredHeight " + view.getMeasuredHeight() + " params.topMargin " + params.topMargin + " bottomMargin " + params.bottomMargin);
+                if (heightMax < (view.getMeasuredHeight() + params.topMargin + params.bottomMargin)) {
                     heightMax = (view.getMeasuredHeight() + params.topMargin + params.bottomMargin);
                 }
             } else {
                 //换行
                 if ((measureHeight + heightMax) < heightSize) {
                     //换行了 高度增加
+
                     measureHeight += heightMax;
-                    Log.e("xhc", " 高度增加了几次 " + measureHeight);
+                    heightMax = 0 ;
                 }
                 if (widthMax < measureWidth) {
                     //换成最宽的宽度;
@@ -70,9 +68,8 @@ public class MyFlowLayout extends ViewGroup {
             }
         }
 
-//        Log.e("xhc"," width "+measureWidth);
 
-        if(widthMax != 0){
+        if (widthMax != 0) {
             measureWidth = widthMax;
         }
 
@@ -99,13 +96,40 @@ public class MyFlowLayout extends ViewGroup {
         if (heightMode == MeasureSpec.EXACTLY) {
             measureHeight = heightSize;
         }
-        Log.e("xhc", "width " + measureWidth + " height " + measureHeight);
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
+        //注意父控件的padding，子空间的margin
+        int childCount = getChildCount();
+        int paddingLeft = getPaddingLeft();
+        int paddintRight = getPaddingRight();
+        int paddingTop = getPaddingTop();
+        int paddingBottom = getPaddingBottom();
+        int width = getMeasuredWidth();
+        int height = getMeasuredHeight();
+        int currentX = paddingLeft, currentY = paddingTop;
+        int heightMax = 0;
+        for (int i = 0; i < childCount; ++i) {
+            View child = getChildAt(i);
+            MarginLayoutParams params = (MarginLayoutParams) child.getLayoutParams();
+            int childTotalWidth = params.leftMargin + params.rightMargin + child.getMeasuredWidth();
+            Log.e("xhc", " currentX " + currentX + " width " + getMeasuredWidth() + " left " + (paddintRight + currentX + childTotalWidth));
+            if ((paddintRight + currentX + childTotalWidth) <= getMeasuredWidth()) {
+                //这一行可以放下
+                int left = (currentX + params.leftMargin);
+                int top = (currentY + params.topMargin);
+                child.layout(left, top, left + child.getMeasuredWidth(), top + child.getMeasuredHeight());
+                currentX += (params.leftMargin + child.getMeasuredWidth() + params.rightMargin);
+                if (heightMax < (top + child.getMeasuredHeight() + params.bottomMargin)) {
+                    heightMax = (top + child.getMeasuredHeight() + params.bottomMargin);
+                }
+            } else {
+                currentX = paddingLeft;
+                currentY += heightMax;
+            }
+        }
 
     }
 
