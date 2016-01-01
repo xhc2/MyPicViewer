@@ -10,9 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.LinearLayout;
 
-/**
- * 制作一个图片查看器，类似qq空间，朋友圈，微博那种。
- */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

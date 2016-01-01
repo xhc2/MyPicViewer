@@ -9,10 +9,12 @@
         android:id="@+id/layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:background="#A5B8AF">
 
         <TextView
             android:layout_width="wrap_content"
+            android:background="#ffffff"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="test" />
@@ -20,6 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#ffffff"
             android:layout_margin="10dp"
             android:text="test" />
 
@@ -27,12 +30,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:background="#ffffff"
             android:text="test" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:background="#ffffff"
             android:text="teste" />
 
         <TextView
@@ -44,15 +49,16 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="10dp"
             android:layout_margin="10dp"
             android:background="#ffffff"
+            android:padding="10dp"
             android:text="test" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:background="#ffffff"
             android:text="test" />
 
         <TextView
@@ -64,12 +70,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="#ffffff"
             android:layout_margin="10dp"
+            android:background="#ffffff"
             android:text="testasd" />
 
         <TextView
             android:layout_width="wrap_content"
+            android:background="#ffffff"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="testadf" />
@@ -77,14 +84,73 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:layout_margin="10dp"
+            android:text="test" />
+
+        <TextView
+            android:background="#ffffff"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="test" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:background="#ffffff"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="test" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:background="#ffffff"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="test" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="#ffffff"
             android:layout_margin="10dp"
-            android:text="test" />
+            android:text="testrrrrr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+            android:text="testrrrrr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#ffffff"
+            android:layout_margin="10dp"
+            android:text="testrrrrr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+            android:text="testrrrrr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:background="#ffffff"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="testrrrrr" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:background="#ffffff"
+            android:padding="40dp"
+            android:text="中文" />
 
     </com.example.tongmin.mypicviewer.MyFlowLayout>
 

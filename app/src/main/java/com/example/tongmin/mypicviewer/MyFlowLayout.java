@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 /**
  * 制作一个流式布局，依次从左往右
@@ -25,6 +26,7 @@ public class MyFlowLayout extends ViewGroup {
     //测试布局的尺寸
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        Log.e("xhc","onMeasure");
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
@@ -46,7 +48,7 @@ public class MyFlowLayout extends ViewGroup {
 
             MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
             measureChild(view, widthMeasureSpec, heightMeasureSpec);
-//            Log.e("xhc"," height "+ view.getMeasuredHeight());
+
             if ((measureWidth + params.rightMargin + params.leftMargin + view.getMeasuredWidth() + getPaddingRight()) <= widthSize) {
                 //这一行可以放下这个控件
                 measureWidth += (params.rightMargin + params.leftMargin + view.getMeasuredWidth());
@@ -59,12 +61,19 @@ public class MyFlowLayout extends ViewGroup {
                     //换行了 高度增加
 
                     measureHeight += heightMax;
+                    Log.e("xhc","高度增加"+measureHeight);
                     heightMax = 0 ;
                 }
                 if (widthMax < measureWidth) {
                     //换成最宽的宽度;
                     widthMax = measureWidth;
                 }
+                //行宽重新开始
+                measureWidth = 0  ;
+            }
+            if(i == (childCount - 1)){
+                    //这个是最后一行并且没到换行的地方需要把这一行的高度加进去
+                    measureHeight += heightMax;
             }
         }
 
@@ -96,11 +105,14 @@ public class MyFlowLayout extends ViewGroup {
         if (heightMode == MeasureSpec.EXACTLY) {
             measureHeight = heightSize;
         }
+        Log.e("xhc"," measureWidth "+measureWidth+" measureHeight "+measureHeight);
+
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.e("xhc","onLayout");
         //注意父控件的padding，子空间的margin
         int childCount = getChildCount();
         int paddingLeft = getPaddingLeft();
@@ -115,7 +127,6 @@ public class MyFlowLayout extends ViewGroup {
             View child = getChildAt(i);
             MarginLayoutParams params = (MarginLayoutParams) child.getLayoutParams();
             int childTotalWidth = params.leftMargin + params.rightMargin + child.getMeasuredWidth();
-            Log.e("xhc", " currentX " + currentX + " width " + getMeasuredWidth() + " left " + (paddintRight + currentX + childTotalWidth));
             if ((paddintRight + currentX + childTotalWidth) <= getMeasuredWidth()) {
                 //这一行可以放下
                 int left = (currentX + params.leftMargin);
@@ -129,6 +140,7 @@ public class MyFlowLayout extends ViewGroup {
                 currentX = paddingLeft;
                 currentY += heightMax;
             }
+
         }
 
     }
@@ -147,5 +159,11 @@ public class MyFlowLayout extends ViewGroup {
     protected LayoutParams generateDefaultLayoutParams() {
         return new MarginLayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.e("xhc","onAttachedToWindow");
     }
 }
