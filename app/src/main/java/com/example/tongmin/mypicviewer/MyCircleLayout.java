@@ -214,8 +214,8 @@ public class MyCircleLayout extends ViewGroup {
 
                 if (speed > 1) {
                     isFling = true;
-                    flingThread = new FlingClass(angle , quadrant);
-                    this.post(flingThread);
+//                    flingThread = new FlingClass(angle , quadrant);
+//                    this.post(flingThread);
                 }
 
                 break;
