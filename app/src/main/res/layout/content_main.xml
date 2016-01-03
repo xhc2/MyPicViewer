@@ -154,9 +154,4 @@
 
     </com.example.tongmin.mypicviewer.MyFlowLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/layout"
-        android:text="test" />
 </RelativeLayout>
