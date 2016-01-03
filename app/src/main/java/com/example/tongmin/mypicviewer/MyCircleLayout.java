@@ -33,7 +33,7 @@ public class MyCircleLayout extends ViewGroup {
     private VelocityTracker velocityTracker;
     private float dX = 0, dY = 0, mX = 0, mY = 0, uX = 0, uY = 0;
     private float lastX = 0, lastY = 0;
-
+    private boolean isFling = false;
     public MyCircleLayout(Context context) {
         this(context, null);
     }
@@ -166,7 +166,6 @@ public class MyCircleLayout extends ViewGroup {
     }
 
     public void setBaseAngle(float angle) {
-        Log.e("xhc", "这里" + angle);
         this.baseAngle += angle;
         requestLayout();
     }
@@ -186,8 +185,9 @@ public class MyCircleLayout extends ViewGroup {
                 dY = event.getY();
                 lastX = event.getX();
                 lastY = event.getY();
-                if(flingThread != null){
+                if(flingThread != null && isFling){
                     removeCallbacks(flingThread);
+                    isFling = false;
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -213,9 +213,9 @@ public class MyCircleLayout extends ViewGroup {
                 final float speed = (float) Math.hypot(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
 
                 if (speed > 1) {
-
-//                    flingThread = new FlingClass(angle , quadrant);
-//                    this.post(flingThread);
+                    isFling = true;
+                    flingThread = new FlingClass(angle , quadrant);
+                    this.post(flingThread);
                 }
 
                 break;
@@ -236,8 +236,7 @@ public class MyCircleLayout extends ViewGroup {
         }
         @Override
         public void run() {
-
-            while(Math.abs(angle) > 0.002f){
+            while(Math.abs(angle) > 0.2f && isFling){
                 Log.e("xhc","angle "+angle);
                 try{
                     Thread.sleep(5);
@@ -245,7 +244,12 @@ public class MyCircleLayout extends ViewGroup {
 
                 }
 
-                angle *= 0.9f;
+                if(angle > 0 ){
+                    angle -= 0.15f;
+                }
+                else{
+                    angle += 0.15f;
+                }
                 if (quadrant == 1 || quadrant == 3) {
                     angle *= -1;
                 } /*else {
