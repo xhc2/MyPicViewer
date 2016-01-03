@@ -15,6 +15,7 @@
     <com.example.tongmin.mypicviewer.MyCircleLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:id="@+id/circle"
         android:background="#00E6B8">
 
         <Button

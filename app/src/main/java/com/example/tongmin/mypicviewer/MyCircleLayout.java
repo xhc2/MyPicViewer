@@ -1,5 +1,6 @@
 package com.example.tongmin.mypicviewer;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -8,8 +9,10 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -24,12 +27,13 @@ public class MyCircleLayout extends ViewGroup {
     private int radius;
     private int defaultSize = 250;
     //基础角度，后期的旋转都依靠这个
-    private double baseAngle = 100;
+    private double baseAngle = 0;
     private int circleX, circleY;
     private Paint paint;
-
+    private VelocityTracker velocityTracker;
     private float dX = 0, dY = 0, mX = 0, mY = 0, uX = 0, uY = 0;
-    private float lastX = 0 , lastY = 0 ;
+    private float lastX = 0, lastY = 0;
+
     public MyCircleLayout(Context context) {
         this(context, null);
     }
@@ -48,6 +52,7 @@ public class MyCircleLayout extends ViewGroup {
         paint.setColor(Color.parseColor("#000000"));
         paint.setAntiAlias(true);
         paint.setStyle(Paint.Style.STROKE);
+        velocityTracker = VelocityTracker.obtain();
     }
 
     @Override
@@ -141,7 +146,7 @@ public class MyCircleLayout extends ViewGroup {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawCircle(circleX, circleY, 5, paint);
-        canvas.drawCircle(circleX, circleY, Math.min(getMeasuredHeight(),getMeasuredWidth()) /2, paint);
+        canvas.drawCircle(circleX, circleY, Math.min(getMeasuredHeight(), getMeasuredWidth()) / 2, paint);
 
         drawPath(canvas);
     }
@@ -160,41 +165,58 @@ public class MyCircleLayout extends ViewGroup {
         }
     }
 
+    public void setBaseAngle(float angle) {
+        Log.e("xhc", "这里" + angle);
+        this.baseAngle += angle;
+        requestLayout();
+    }
 
+    public double getBaseAngle() {
+        return baseAngle;
+    }
+    private double angle;
+    private int quadrant;
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 
-
+        velocityTracker.addMovement(event);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 dX = event.getX();
                 dY = event.getY();
                 lastX = event.getX();
-                lastY  = event.getY();
+                lastY = event.getY();
+                if(flingThread != null){
+                    removeCallbacks(flingThread);
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 mX = event.getX();
                 mY = event.getY();
-                double start = getAngle(lastX,lastY);
-                double end =  getAngle(mX,mY);
-                double angle = end - start;
-                int quadrant = judgeQuadrant(mX, mY);
-                if(quadrant == 1 || quadrant == 3){
-                    baseAngle -= angle ;
-                }
-                else {
+                double start = getAngle(lastX, lastY);
+                double end = getAngle(mX, mY);
+                angle = end - start;
+                quadrant = judgeQuadrant(mX, mY);
+                if (quadrant == 1 || quadrant == 3) {
                     baseAngle -= angle;
+                } else {
+                    baseAngle += angle;
                 }
-                //                Log.e("xhc","angle "+angle+ " pi /2 "+(Math.PI / 2 ));
 
                 lastY = mY;
                 lastX = mX;
+                velocityTracker.computeCurrentVelocity(1);
                 requestLayout();
                 break;
             case MotionEvent.ACTION_UP:
                 //在这里计算滑动速度
-                uX = event.getX();
-                uY = event.getY();
+                final float speed = (float) Math.hypot(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
+
+                if (speed > 1) {
+
+//                    flingThread = new FlingClass(angle , quadrant);
+//                    this.post(flingThread);
+                }
 
                 break;
 
@@ -204,33 +226,66 @@ public class MyCircleLayout extends ViewGroup {
     }
 
 
+    private FlingClass flingThread ;
+    class FlingClass implements Runnable{
+        double angle ;
+        int quadrant;
+        FlingClass( double angle, int quadrant){
+            this.angle = angle;
+            this.quadrant = quadrant;
+        }
+        @Override
+        public void run() {
+
+            while(Math.abs(angle) > 0.002f){
+                Log.e("xhc","angle "+angle);
+                try{
+                    Thread.sleep(5);
+                }catch(Exception e){
+
+                }
+
+                angle *= 0.9f;
+                if (quadrant == 1 || quadrant == 3) {
+                    angle *= -1;
+                } /*else {
+                    baseAngle += angle;
+                }*/
+                setBaseAngle((float)angle);
+            }
+        }
+    }
+
+
     //判断在哪个象限
-    private int judgeQuadrant(float x , float y ){
+    private int judgeQuadrant(float x, float y) {
         x -= circleX;
         y -= circleY;
-        if( y >= 0){
+        if (y >= 0) {
+            //是在数学坐标系的3，4象限范围 注意屏幕上的x，y不是数学上的x，y
+            return x >= 0 ? 4 : 3;
+        } else {
             return x >= 0 ? 1 : 2;
         }
-        else {
-            return x >= 0 ? 4 : 3;
-        }
     }
 
-    private double getAngle(float x, float y ){
-        x -= circleX ;
+    private double getAngle(float x, float y) {
+        x -= circleX;
         y -= circleY;
-        if(x == 0) return 0;
-        return Math.atan(y/x);
+        y = Math.abs(y);
+        x = Math.abs(x);
+//        if(x == 0) return 0;
+        return Math.atan(y / x);
     }
 
 
-    private int getLineLengthCircle(int x , int y){
-        return (int)Math.sqrt(Math.pow((x - circleX),2) + Math.pow((y-circleY),2));
+    private int getLineLengthCircle(int x, int y) {
+        return (int) Math.sqrt(Math.pow((x - circleX), 2) + Math.pow((y - circleY), 2));
     }
 
-    private int getLineLength(int x1 , int y1 , int x2 , int y2 ){
+    private int getLineLength(int x1, int y1, int x2, int y2) {
 
-        return (int)Math.sqrt(Math.pow((x1 - x2),2) + Math.pow((y1-y2),2));
+        return (int) Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
     }
 }
 
