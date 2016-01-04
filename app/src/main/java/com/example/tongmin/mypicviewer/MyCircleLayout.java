@@ -58,10 +58,12 @@ public class MyCircleLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+
         int measureWidth, measureHeight;
         if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
             measureWidth = widthSize;
@@ -116,13 +118,10 @@ public class MyCircleLayout extends ViewGroup {
                 //第一象限 x + , y -
                 childX = (int) (circleX + Math.abs(tempX));
                 childY = (int) (circleY - Math.abs(tempY));
-
             } else if (angleWhere >= Math.PI / 2 && angleWhere < Math.PI) {
                 //第二象限 x + , y +
                 childX = (int) (circleX + Math.abs(tempX));
                 childY = (int) (circleY + Math.abs(tempY));
-
-
             } else if (angleWhere >= Math.PI && angleWhere < (Math.PI * 3 / 2)) {
                 //第三象限 x - , y +
                 childX = (int) (circleX - Math.abs(tempX));
@@ -133,13 +132,12 @@ public class MyCircleLayout extends ViewGroup {
                 childY = (int) (circleY - Math.abs(tempY));
             } else {
             }
+
             //细调控件位置，将位置指向控件中心
             childX -= child.getMeasuredWidth() / 2;
             childY -= child.getMeasuredHeight() / 2;
             child.layout(childX, childY, childX + child.getMeasuredWidth(), childY + child.getMeasuredHeight());
         }
-
-
     }
 
     @Override
@@ -212,11 +210,6 @@ public class MyCircleLayout extends ViewGroup {
                 //在这里计算滑动速度
                 final float speed = (float) Math.hypot(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
 
-                if (speed > 1) {
-                    isFling = true;
-//                    flingThread = new FlingClass(angle , quadrant);
-//                    this.post(flingThread);
-                }
 
                 break;
 

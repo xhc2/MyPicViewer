@@ -36,7 +36,6 @@ public class MyFlowLayout extends ViewGroup {
             setMeasuredDimension(widthSize, heightSize);
             return;
         }
-
         //最后管padding
         int childCount = getChildCount();
         int measureWidth = 0, measureHeight = 0;
@@ -45,10 +44,8 @@ public class MyFlowLayout extends ViewGroup {
 
         for (int i = 0; i < childCount; ++i) {
             View view = getChildAt(i);
-
             MarginLayoutParams params = (MarginLayoutParams) view.getLayoutParams();
             measureChild(view, widthMeasureSpec, heightMeasureSpec);
-
             if ((measureWidth + params.rightMargin + params.leftMargin + view.getMeasuredWidth() + getPaddingRight()) <= widthSize) {
                 //这一行可以放下这个控件
                 measureWidth += (params.rightMargin + params.leftMargin + view.getMeasuredWidth());
@@ -59,7 +56,6 @@ public class MyFlowLayout extends ViewGroup {
                 //换行
                 if ((measureHeight + heightMax) < heightSize) {
                     //换行了 高度增加
-
                     measureHeight += heightMax;
                     Log.e("xhc","高度增加"+measureHeight);
                     heightMax = 0 ;
@@ -81,8 +77,6 @@ public class MyFlowLayout extends ViewGroup {
         if (widthMax != 0) {
             measureWidth = widthMax;
         }
-
-
         if (measureHeight == 0) {
             measureHeight = heightMax;
         }
@@ -105,8 +99,6 @@ public class MyFlowLayout extends ViewGroup {
         if (heightMode == MeasureSpec.EXACTLY) {
             measureHeight = heightSize;
         }
-        Log.e("xhc"," measureWidth "+measureWidth+" measureHeight "+measureHeight);
-
         setMeasuredDimension(measureWidth, measureHeight);
     }
 
@@ -136,7 +128,8 @@ public class MyFlowLayout extends ViewGroup {
                 if (heightMax < (top + child.getMeasuredHeight() + params.bottomMargin)) {
                     heightMax = (top + child.getMeasuredHeight() + params.bottomMargin);
                 }
-            } else {
+            }
+            else {
                 currentX = paddingLeft;
                 currentY += heightMax;
             }
