@@ -110,6 +110,10 @@ public class MyCircleLayout extends ViewGroup {
             //将子控件平均分布
             View child = getChildAt(i);
             double tempAngle = i * angle + baseAngle;
+            if(tempAngle < 0 ){
+//                tempAngle不能为负
+                tempAngle += 10*2*Math.PI;
+            }
             double tempX = Math.sin(tempAngle) * radius;
             double tempY = Math.cos(tempAngle) * radius;
 //            判断在哪个象限 //然后调整控件的位置
@@ -183,10 +187,6 @@ public class MyCircleLayout extends ViewGroup {
                 dY = event.getY();
                 lastX = event.getX();
                 lastY = event.getY();
-                if(flingThread != null && isFling){
-                    removeCallbacks(flingThread);
-                    isFling = false;
-                }
                 break;
             case MotionEvent.ACTION_MOVE:
                 mX = event.getX();
@@ -204,13 +204,11 @@ public class MyCircleLayout extends ViewGroup {
                 lastY = mY;
                 lastX = mX;
                 velocityTracker.computeCurrentVelocity(1);
-                requestLayout();
+
                 break;
             case MotionEvent.ACTION_UP:
                 //在这里计算滑动速度
                 final float speed = (float) Math.hypot(velocityTracker.getXVelocity(), velocityTracker.getYVelocity());
-
-
                 break;
 
         }
